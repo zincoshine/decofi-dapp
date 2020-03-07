@@ -1,26 +1,33 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { useWallet, UseWalletProvider } from 'use-wallet'
+import { MetaMaskButton, EthAddress} from 'rimble-ui';
 
 function App() {
+  const wallet = useWallet()
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {wallet.connected ? (
+        <div>
+          <EthAddress address={wallet.account}/>
+          <div>Balance: {wallet.balance / 1e18} ETH</div>
+          <div>Network: {wallet.networkName}</div>
+          <button onClick={() => wallet.deactivate()}>disconnect</button>
+        </div>
+      ) : (
+          <MetaMaskButton.Outline onClick={() => wallet.activate()}>Connect with MetaMask</MetaMaskButton.Outline>
+      )}
     </div>
   );
 }
 
-export default App;
+export default () => (
+  <UseWalletProvider
+    chainId={3}
+    connectors={{
+      // This is how connectors get configured
+    }}
+  >
+    <App />
+  </UseWalletProvider>
+)
