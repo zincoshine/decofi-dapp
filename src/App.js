@@ -1,21 +1,23 @@
 import React from 'react';
 import './App.css';
 import { useWallet, UseWalletProvider } from 'use-wallet'
-import { MetaMaskButton, EthAddress} from 'rimble-ui';
+import { MetaMaskButton, Button } from 'rimble-ui';
+import { ConnectedCard } from './components/ConnectedCard';
+import walletConnectInit from './utils/WalletConnect';
 
 function App() {
-  const wallet = useWallet()
+  const wallet = useWallet();
   return (
     <div className="App">
       {wallet.connected ? (
-        <div>
-          <EthAddress address={wallet.account}/>
-          <div>Balance: {wallet.balance / 1e18} ETH</div>
-          <div>Network: {wallet.networkName}</div>
-          <button onClick={() => wallet.deactivate()}>disconnect</button>
+        <div align={"center"}>
+        <ConnectedCard wallet={wallet}></ConnectedCard>
         </div>
       ) : (
+        <div>
           <MetaMaskButton.Outline onClick={() => wallet.activate()}>Connect with MetaMask</MetaMaskButton.Outline>
+          <Button.Outline onClick={() => walletConnectInit()}>Connect with WalletConnect</Button.Outline>
+        </div>
       )}
     </div>
   );
